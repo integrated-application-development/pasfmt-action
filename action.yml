@@ -1,0 +1,67 @@
+name: 'pasfmt'
+description: 'Check formatting of Delphi files using pasfmt'
+author: 'integrated-application-development'
+inputs:
+  args:
+    description: 'Arguments that will be passed to pasfmt.'
+    required: false
+    default: '--mode check .'
+  release-name:
+    description: 'Name of the pasfmt release to use. (Examples: latest, v0.4.0-rc1)'
+    required: false
+    default: 'latest'
+  working-directory:
+    description: 'Directory to run pasfmt in.'
+    required: false
+    default: '.'
+runs:
+  using: "composite"
+  steps:
+    - name: Set up pasfmt
+      shell: bash
+      run: |
+        PASFMT_VERSION="${{ inputs.release-name }}"
+        if [ "$PASFMT_VERSION" = "latest" ]; then
+          PASFMT_VERSION=""
+        fi
+
+        INSTALL_PATH="$HOME/pasfmt"
+        ARCHIVE_NAME="$INSTALL_PATH/archive"
+
+        rm -rf "$INSTALL_PATH"
+        mkdir -p "$INSTALL_PATH"
+
+        case "$(uname -s)" in
+          *_NT*)
+            ARCHIVE_PATTERN="*-windows-*.zip"
+            ;;
+          Linux)
+            ARCHIVE_PATTERN="*-linux-*.tar.gz"
+            ;;
+          *)
+            echo "::error::Unsupported platform: $(uname -s)" >&2
+            exit 1
+            ;;
+        esac
+
+        gh release download $PASFMT_VERSION -R integrated-application-development/pasfmt -p "$ARCHIVE_PATTERN" --output "$ARCHIVE_NAME"
+
+        case "$(uname -s)" in
+          *_NT*)
+            unzip -j "$ARCHIVE_NAME" -d "$INSTALL_PATH"
+            ;;
+          Linux)
+            tar -xzf "$ARCHIVE_NAME" --strip-components 1 -C "$INSTALL_PATH"
+            ;;
+        esac
+
+        chmod +x "$INSTALL_PATH/pasfmt"
+        echo "$INSTALL_PATH" >> $GITHUB_PATH
+      env:
+        GH_TOKEN: ${{ github.token }}
+
+    - name: Run pasfmt
+      shell: bash
+      run: |
+        cd "${{ inputs.working-directory }}"
+        pasfmt ${{ inputs.args }}
