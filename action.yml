@@ -33,7 +33,8 @@ runs:
         rm -rf "$INSTALL_PATH"
         mkdir -p "$INSTALL_PATH"
 
-        case "$(uname -s)" in
+        PLATFORM=$(uname -s)
+        case "$PLATFORM" in
           *_NT*)
             ARCHIVE_PATTERN="*-windows-*.zip"
             ;;
@@ -41,14 +42,14 @@ runs:
             ARCHIVE_PATTERN="*-linux-*.tar.gz"
             ;;
           *)
-            echo "::error::Unsupported platform: $(uname -s)" >&2
+            echo "::error::Unsupported platform: $PLATFORM" >&2
             exit 1
             ;;
         esac
 
         gh release download $PASFMT_VERSION -R integrated-application-development/pasfmt -p "$ARCHIVE_PATTERN" --output "$ARCHIVE_NAME"
 
-        case "$(uname -s)" in
+        case "$PLATFORM" in
           *_NT*)
             unzip -j "$ARCHIVE_NAME" -d "$INSTALL_PATH"
             ;;
