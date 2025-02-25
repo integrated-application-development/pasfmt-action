@@ -19,8 +19,10 @@ runs:
   steps:
     - name: Set up pasfmt
       shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PASFMT_VERSION: ${{ inputs.release-name }}
       run: |
-        PASFMT_VERSION="${{ inputs.release-name }}"
         if [ "$PASFMT_VERSION" = "latest" ]; then
           PASFMT_VERSION=""
         fi
@@ -57,15 +59,16 @@ runs:
 
         chmod +x "$INSTALL_PATH/pasfmt"
         echo "$INSTALL_PATH" >> $GITHUB_PATH
-      env:
-        GH_TOKEN: ${{ github.token }}
 
     - name: Run pasfmt
       shell: bash
+      env:
+        WORKING_DIR: ${{ inputs.working-directory }}
+        ARGS: ${{ inputs.args }}
       run: |
-        if [ ! -d "${{ inputs.working-directory }}" ]; then
-          echo "::error::The specified working directory '${{ inputs.working-directory }}' does not exist." >&2
+        if [ ! -d "$WORKING_DIR" ]; then
+          echo "::error::The specified working directory '$WORKING_DIR' does not exist." >&2
           exit 1
         fi
-        cd "${{ inputs.working-directory }}"
-        pasfmt ${{ inputs.args }}
+        cd "$WORKING_DIR"
+        pasfmt $ARGS
