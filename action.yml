@@ -63,5 +63,9 @@ runs:
     - name: Run pasfmt
       shell: bash
       run: |
+        if [ ! -d "${{ inputs.working-directory }}" ]; then
+          echo "::error::The specified working directory '${{ inputs.working-directory }}' does not exist." >&2
+          exit 1
+        fi
         cd "${{ inputs.working-directory }}"
         pasfmt ${{ inputs.args }}
