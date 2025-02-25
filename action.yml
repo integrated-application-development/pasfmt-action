@@ -71,4 +71,7 @@ runs:
           exit 1
         fi
         cd "$WORKING_DIR"
-        pasfmt $ARGS
+
+        # split args but don't expand globs
+        args=($ARGS)
+        pasfmt "${args[@]}"
