@@ -1,6 +1,9 @@
 name: 'pasfmt'
 description: 'Check formatting of Delphi files using pasfmt'
 author: 'integrated-application-development'
+branding:
+  icon: 'check'
+  color: 'black'
 inputs:
   args:
     description: 'Arguments that will be passed to pasfmt.'
