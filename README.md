@@ -4,11 +4,11 @@ This GitHub Action checks the formatting of your Delphi files using [pasfmt](htt
 
 ## Inputs
 
-| Name                | Description                                               | Default              |
-| ------------------- | --------------------------------------------------------- | -------------------- |
-| `args`              | Arguments passed to `pasfmt`.                             | `--mode check .`     |
-| `release-name`      | The pasfmt release to use (e.g., `latest`, `v0.4.0-rc1`). | `latest`             |
-| `working-directory` | Directory where `pasfmt` will run.                        | `.` (root directory) |
+| Name                | Description                                           | Default              |
+| ------------------- | ----------------------------------------------------- | -------------------- |
+| `args`              | Arguments passed to `pasfmt`.                         | `--mode check .`     |
+| `release-name`      | The pasfmt release to use (e.g., `latest`, `v0.5.1`). | `latest`             |
+| `working-directory` | Directory where `pasfmt` will run.                    | `.` (root directory) |
 
 ## Examples
 
@@ -26,7 +26,7 @@ jobs:
         uses: integrated-application-development/pasfmt-action@v1
 ```
 
-Check the formatting of all Delphi files in `./src`, using `pasfmt` release `v0.4.0-rc1`.
+Check the formatting of all Delphi files in `./src`, using `pasfmt` release `v0.5.1`.
 
 ```yml
 jobs:
@@ -40,7 +40,7 @@ jobs:
         uses: integrated-application-development/pasfmt-action@v1
         with:
           args: "--mode check ./src"
-          release-name: "v0.4.0-rc1"
+          release-name: "v0.5.1"
 ```
 
 Check the formatting of all Delphi files in the repository, using CRLF line endings.
